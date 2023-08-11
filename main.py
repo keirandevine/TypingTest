@@ -1,7 +1,5 @@
 import tkinter
 from tkinter import messagebox
-import time
-import threading
 from PIL import Image, ImageTk
 from game_engine import GameEngine
 
@@ -13,12 +11,12 @@ window.minsize(width=350, height=500)
 
 game_engine = GameEngine()
 secs_left = 60
-#_______________________________________________Constants________________________________________________________#
-
 
 #__________________________________________Definition of Functions_______________________________________________#
 
 def gen_new_test():
+    """When new test button is clicked, this generates a random text and displays it on the
+    main canvas, activates the start button, resets the timer and clears the entry box"""
     global secs_left
     random_text = game_engine.get_text()
     text_canvas = tkinter.Canvas(width=350, height=220, bg="#b1b4ba")
@@ -33,6 +31,7 @@ def gen_new_test():
 
 
 def update_countdown():
+    """This function handles the 60 second countdown and updates the timer display on the canvas"""
     global secs_left
     if secs_left >= 0:
         canvas.itemconfig(timer_text, text=str(secs_left))
@@ -45,6 +44,8 @@ def update_countdown():
 
 
 def start_test():
+    """When start test button clicked, this function clears the entry box, disables the start
+    and result buttons and calls the update countdown function"""
     global secs_left
     secs_left = 60
     entry_box.delete(0, "end")
@@ -55,9 +56,19 @@ def start_test():
 
 
 def check_result():
+    """When check result button is clicked, this calculates and displays the test score"""
     score = game_engine.calculate_score(entry_box.get())
-    print(score)
-    tkinter.messagebox.showinfo("Your score", f"Your score is: {score}" )
+    if score >= 325:
+        message = "Congratulations. You type to a professional standard."
+    elif score >= 250:
+        message = "You are a pretty strong typist"
+    elif score >= 200:
+        message = "You are a better than average typist"
+    elif score >= 175:
+        message = "You are an average typist"
+    else:
+        message = "You are a below average typist"
+    tkinter.messagebox.showinfo("Your score", f"Your score is: {score}. {message}." )
 
 
 
@@ -76,6 +87,8 @@ timer_text = canvas.create_text(100, 85, text="60", fill="white", font=('Arial',
 seconds_text = canvas.create_text(100, 135, text="seconds", fill="white", font=('Arial', 20, 'bold'))
 canvas.grid(row=1, column=0, columnspan=2)
 
+
+#___________________________________Main Canvas and Buttons_____________________________________#
 new_test_button = tkinter.Button(text="New Test", command=gen_new_test)
 new_test_button.config(font=('Georgia', 10, 'normal'))
 new_test_button.grid(row=2, column=0, columnspan=2)
